@@ -61,6 +61,7 @@ myDB(async (client) => {
     res.render("pug", {
       title: "Connected to Database",
       message: "Please login",
+      showLogin: true,
     });
   });
 
@@ -88,12 +89,17 @@ myDB(async (client) => {
 });
 
 //  send variables to the pug engine
-// app.route("/").get((req, res) => {
-//   res.render(process.cwd() + "/views/pug/index", {
-//     title: "Hello",
-//     message: "Please login",
-//   });
-// });
+app.post(
+  "/login",
+  passport.authenticate("local", { failureRedirect: "/" }),
+  (req, res) => {
+    res.redirect("/profile");
+  }
+);
+
+app.route("/profile").get((req, res) => {
+  res.render("pug/profile");
+});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Listening on port " + process.env.PORT);
