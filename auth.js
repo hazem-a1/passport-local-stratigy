@@ -1,4 +1,7 @@
+require("dotenv").config();
+
 const LocalStrategy = require("passport-local");
+const GitHubStrategy = require("passport-github").Strategy;
 const bcrypt = require("bcrypt");
 
 const passport = require("passport");
@@ -19,6 +22,23 @@ module.exports = function (app, myDataBase) {
     });
     // done(null, null);
   });
+
+  // social strategy
+  passport.use(
+    new GitHubStrategy(
+      {
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL:
+          "https://passport-express.herokuapp.com/auth/github/callback",
+      },
+      function (accessToken, refreshToken, profile, cb) {
+        console.log(profile);
+        //Database logic here with callback containing our user object
+      }
+    )
+  );
+
   //   local Strategy
   passport.use(
     new LocalStrategy(function (username, password, done) {
