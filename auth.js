@@ -91,7 +91,6 @@ module.exports = function (app, myDataBase) {
         profileFields: ["id", "displayName", "photos", "email"],
       },
       function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
         myDataBase.findOneAndUpdate(
           { id: profile.id },
           {
