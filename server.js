@@ -55,7 +55,9 @@ myDB(async (client) => {
   // decode it just like JWT
   passport.deserializeUser((id, done) => {
     myDataBase.findOne({ _id: new ObjectID(id) }, (err, doc) => {
-      done(null, null);
+      // console.log(doc);
+      // console.log(err);
+      done(null, doc);
     });
     // done(null, null);
   });
