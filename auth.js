@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const LocalStrategy = require("passport-local");
 const GitHubStrategy = require("passport-github").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 const bcrypt = require("bcrypt");
 
 const passport = require("passport");
@@ -52,6 +53,44 @@ module.exports = function (app, myDataBase) {
           "https://passport-express.herokuapp.com/auth/github/callback",
       },
       (accessToken, refreshToken, profile, cb) => {
+        myDataBase.findOneAndUpdate(
+          { id: profile.id },
+          {
+            $setOnInsert: {
+              id: profile.id,
+              name: profile.displayName || "John Doe",
+              photo: profile.photos[0].value || "",
+              email: Array.isArray(profile.emails)
+                ? profile.emails[0].value
+                : "No public email",
+              created_on: new Date(),
+              provider: profile.provider || "",
+            },
+            $set: {
+              last_login: new Date(),
+            },
+            $inc: {
+              login_count: 1,
+            },
+          },
+          { upsert: true, new: true },
+          (err, doc) => {
+            return cb(null, doc.value);
+          }
+        );
+      }
+    )
+  );
+  passport.use(
+    new FacebookStrategy(
+      {
+        clientID: process.env.FACEBOOK_APP_ID,
+        clientSecret: process.env.FACEBOOK_APP_SECRET,
+        callbackURL:
+          "https://passport-express.herokuapp.com/auth/facebook/callback",
+        profileFields: ["id", "displayName", "photos", "email"],
+      },
+      function (accessToken, refreshToken, profile, cb) {
         myDataBase.findOneAndUpdate(
           { id: profile.id },
           {

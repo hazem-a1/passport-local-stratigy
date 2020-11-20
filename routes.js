@@ -83,4 +83,14 @@ module.exports = function (app, myDataBase) {
         res.redirect("/profile");
       }
     );
+  app.route("/auth/facebook").get(passport.authenticate("facebook"));
+
+  app
+    .route("/auth/facebook/callback")
+    .get(
+      passport.authenticate("facebook", { failureRedirect: "/" }),
+      (req, res) => {
+        res.redirect("/profile");
+      }
+    );
 };
