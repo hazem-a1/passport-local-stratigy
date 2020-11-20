@@ -33,6 +33,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// middle ware to check if a user is authenticated  or redirect to home page
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -105,9 +106,12 @@ app.post(
 );
 
 app.route("/profile").get(ensureAuthenticated, (req, res) => {
-  res.render("pug/profile");
+  res.render("pug/profile", { username: req.user.username });
 });
 
+app.post("/logout", (req, res) => {
+  console.log("logout");
+});
 app.listen(process.env.PORT || 3000, () => {
   console.log("Listening on port " + process.env.PORT);
 });
