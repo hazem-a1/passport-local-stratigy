@@ -15,12 +15,11 @@ module.exports = function (app, myDataBase) {
   // decode it just like JWT
   passport.deserializeUser((id, done) => {
     myDataBase.findOne({ _id: new ObjectID(id) }, (err, doc) => {
-      // console.log(doc);
-      // console.log(err);
       done(null, doc);
     });
     // done(null, null);
   });
+  //   local Strategy
   passport.use(
     new LocalStrategy(function (username, password, done) {
       myDataBase.findOne({ username: username }, function (err, user) {

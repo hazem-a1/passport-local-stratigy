@@ -9,6 +9,7 @@ module.exports = function (app, myDataBase) {
     }
     res.redirect("/");
   }
+  //   register users
   app.route("/register").post(
     (req, res, next) => {
       myDataBase.findOne({ username: req.body.username }, function (err, user) {
@@ -42,7 +43,7 @@ module.exports = function (app, myDataBase) {
       res.redirect("/profile");
     }
   );
-  // Be sure to change the title
+  // main page /
   app.route("/").get((req, res) => {
     //Change the response to render the Pug template
     res.render("pug", {
