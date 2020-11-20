@@ -33,6 +33,13 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/");
+}
+
 //  not sending any thing until connecting to DB
 myDB(async (client) => {
   const myDataBase = await client.db("database").collection("users");
@@ -97,7 +104,7 @@ app.post(
   }
 );
 
-app.route("/profile").get((req, res) => {
+app.route("/profile").get(ensureAuthenticated, (req, res) => {
   res.render("pug/profile");
 });
 
