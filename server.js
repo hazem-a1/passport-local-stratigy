@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
+const bcrypt = require("bcrypt");
 const LocalStrategy = require("passport-local");
 const ObjectID = require("mongodb").ObjectID;
 
@@ -55,7 +56,7 @@ myDB(async (client) => {
         if (!user) {
           return done(null, false);
         }
-        if (password !== user.password) {
+        if (!bcrypt.compareSync(password, user.password)) {
           return done(null, false);
         }
         return done(null, user);
@@ -70,10 +71,12 @@ myDB(async (client) => {
         } else if (user) {
           res.redirect("/");
         } else {
+          var hash = bcrypt.hashSync(req.body.password, 12);
+
           myDataBase.insertOne(
             {
               username: req.body.username,
-              password: req.body.password,
+              password: hash,
             },
             (err, doc) => {
               if (err) {
