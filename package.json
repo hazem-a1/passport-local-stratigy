@@ -1,0 +1,29 @@
+{
+  "name": "fcc-advanced-node-and-express",
+  "author": "hazem",
+  "version": "0.0.1",
+  "description": "passport",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.16.1",
+    "mongodb": "^3.6.1",
+    "node": "12.18.0",
+    "pug": "3.0.0"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "pug",
+    "passport",
+    "socketio"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
