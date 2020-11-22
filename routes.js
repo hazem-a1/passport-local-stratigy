@@ -83,6 +83,24 @@ module.exports = function (app, myDataBase) {
         res.redirect("/profile");
       }
     );
+
+  // google auth rout
+  app.get(
+    "/auth/google",
+    passport.authenticate("google", {
+      scope: ["https://www.googleapis.com/auth/plus.login"],
+    })
+  );
+
+  app.get(
+    "/auth/google/callback",
+    passport.authenticate("google", { failureRedirect: "/" }),
+    function (req, res) {
+      res.redirect("/");
+    }
+  );
+
+  // FB  auth route
   app.route("/auth/facebook").get(passport.authenticate("facebook"));
 
   app
