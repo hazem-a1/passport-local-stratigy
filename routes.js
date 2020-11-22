@@ -9,6 +9,33 @@ module.exports = function (app, myDataBase) {
     }
     res.redirect("/");
   }
+  function profileRedirect(req, res, next) {
+    if (req.isAuthenticated()) {
+      res.redirect("/profile");
+    }
+    return next();
+  }
+  // main page /
+  app.route("/").get(profileRedirect, (req, res) => {
+    //Change the response to render the Pug template
+    res.render("pug", {
+      title: "Training",
+      message: "Please login",
+      showLogin: true,
+      showRegistration: true,
+      showSocialAuth: true,
+    });
+  });
+
+  // main profile
+  app.route("/profile").get(ensureAuthenticated, (req, res) => {
+    res.render("pug/profile", { username: req.user.username });
+  });
+  // logout
+  app.route("/logout").get((req, res) => {
+    req.logout();
+    res.redirect("/");
+  });
   //   register users
   app.route("/register").post(
     (req, res, next) => {
@@ -43,17 +70,7 @@ module.exports = function (app, myDataBase) {
       res.redirect("/profile");
     }
   );
-  // main page /
-  app.route("/").get((req, res) => {
-    //Change the response to render the Pug template
-    res.render("pug", {
-      title: "Training",
-      message: "Please login",
-      showLogin: true,
-      showRegistration: true,
-      showSocialAuth: true,
-    });
-  });
+  // local auth route
   app
     .route("/login")
     .post(
@@ -63,16 +80,9 @@ module.exports = function (app, myDataBase) {
       }
     );
 
-  app.route("/profile").get(ensureAuthenticated, (req, res) => {
-    res.render("pug/profile", { username: req.user.username });
-  });
-
-  app.route("/logout").get((req, res) => {
-    req.logout();
-    res.redirect("/");
-  });
-
   // social
+
+  //  github auth route
   app.route("/auth/github").get(passport.authenticate("github"));
 
   app
